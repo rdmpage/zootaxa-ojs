@@ -77,12 +77,18 @@ function add_article(&$ojs, &$section, $reference)
 		
 		$firstname = $author->appendChild($ojs->createElement('firstname'));
 		$firstname->appendChild($ojs->createTextNode($an_author->firstname));
+		
+		if (isset($an_author->middlename))
+		{
+			$middlename = $author->appendChild($ojs->createElement('middlename'));
+			$middlename->appendChild($ojs->createTextNode($an_author->middlename));		
+		}
 
 		$lastname = $author->appendChild($ojs->createElement('lastname'));
 		$lastname->appendChild($ojs->createTextNode($an_author->lastname));				
 
 		$email = $author->appendChild($ojs->createElement('email'));
-		$email->appendChild($ojs->createCDATASection(''));				
+		$email->appendChild($ojs->createTextNode('user@example.com'));				
 		
 		$author_count++;
 	}

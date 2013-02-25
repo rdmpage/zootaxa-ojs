@@ -137,6 +137,71 @@ function add_author(&$obj, $authorstring)
 	
 	$a = null;
 	
+	// Get parts of name
+	$parts = parse_name($authorstring);
+	
+	$a = new stdClass();
+	
+	if (isset($parts['last']))
+	{
+		$a->lastname = $parts['last'];
+	}
+	if (isset($parts['suffix']))
+	{
+		$a->suffix = $parts['suffix'];
+	}
+	if (isset($parts['first']))
+	{
+		$a->firstname = $parts['first'];
+		
+		if (array_key_exists('middle', $parts))
+		{
+			$a->middlename .= ' ' . $parts['middle'];
+		}
+	}
+	
+	// Handle initials with no separator
+	if (preg_match('/^([A-Z]+)$/Uu', $a->firstname))
+	{
+		$str = $a->firstname;			
+		
+		$len = mb_strlen($str);
+		
+		$parts = array();
+		for($i=0;$i<$len;$i++)
+		{
+			$parts[] = mb_substr($str,$i,1);
+		}
+		$a->firstname = $parts[0] . '.';
+		
+		if ($len > 1)
+		{
+			array_shift($parts);
+			$a->middlename = join(". ", $parts) . '.';
+		}
+	}		
+	
+	
+	// Add periods if missing
+	if (isset($a->firstname))
+	{
+		if (preg_match('/^\w$/Uu', $a->firstname))
+		{
+			$a->firstname .= '.';
+		}
+	}
+	
+	/*
+	if (isset($a->firstname))
+	{
+		if (preg_match('/^\w$/Uu', $a->firstname))
+		{
+			$a->firstname .= '.';
+		}
+	}
+	*/
+	
+	/*
 	if (!$matched)
 	{
 		if (preg_match('/^(?<lastname>\w+),?\s(?<forename>.*)(\s(?<suffix>Jr))?$/Uu', $authorstring, $m))
@@ -166,6 +231,7 @@ function add_author(&$obj, $authorstring)
 		}
 		$matched = true;
 	}
+	*/
 	
 	/*
 	if (!$matched)

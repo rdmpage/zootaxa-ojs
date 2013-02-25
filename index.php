@@ -19,12 +19,28 @@ function main()
 		}
 		else
 		{
+			$download = false;
+			if (isset($_POST['download']) && ($_POST['download'] == 'download'))
+			{
+				$download = true;
+			}
+		
 			$filename = "tmp/" . $_FILES["uploadedfile"]["name"];
 			move_uploaded_file($_FILES["uploadedfile"]["tmp_name"], $filename);
+			
+			$info = pathinfo($filename);
+			
+			$xml_filename = $info['filename'] . '.xml';
 			
 			$xml = wos2xml($filename);
 			
 			header("Content-type: application/xml");
+			
+			if ($download)
+			{
+				header('Content-Disposition: attachment; filename="' . $xml_filename . '"');
+			}
+
 			echo $xml;
 
 		}
@@ -51,7 +67,10 @@ $html = <<<EOT
 			<h2>Web of Science (Endnote)</h2>
 			<p>Upload a Web of Science file in Endnote format (with abstracts if possible)</p>
 			<form enctype="multipart/form-data" action="index.php" method="POST">
-				Choose a file to upload: <input name="uploadedfile" type="file" />
+				Choose a file to upload: <input name="uploadedfile" type="file" /><br />
+				<input type="checkbox" name="download" value="download"  /> Download XML<br />
+				<br />
+				
 				<input type="submit" value="Upload File" /><br />
 			</form>
 		</body>
