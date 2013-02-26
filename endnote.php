@@ -177,7 +177,7 @@ function add_author(&$obj, $authorstring)
 		if ($len > 1)
 		{
 			array_shift($parts);
-			$a->middlename = join(". ", $parts) . '.';
+			$a->middlename = trim(join(". ", $parts) . '.');
 		}
 	}		
 	

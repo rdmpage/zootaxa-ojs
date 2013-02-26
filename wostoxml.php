@@ -81,7 +81,7 @@ function add_article(&$ojs, &$section, $reference)
 		if (isset($an_author->middlename))
 		{
 			$middlename = $author->appendChild($ojs->createElement('middlename'));
-			$middlename->appendChild($ojs->createTextNode(trim($an_author->middlename)));		
+			$middlename->appendChild($ojs->createTextNode($an_author->middlename));		
 		}
 
 		$lastname = $author->appendChild($ojs->createElement('lastname'));
