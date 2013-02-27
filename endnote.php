@@ -306,7 +306,7 @@ function import_endnote_file($filename, $callback_func = '')
 			$obj = new stdClass();
 			$obj->author = array();
 			
-			if ('J' == $value)
+			if ('J' ==  $current_value)
 			{
 				$obj->type = 'article';
 				$obj->journal = new stdclass;
