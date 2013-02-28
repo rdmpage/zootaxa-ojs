@@ -39,12 +39,6 @@ function process_endnote_key($key, $value, &$obj)
 			break;
 	
 		case 'SO':
-			/*
-			$value = mb_convert_case($value, 
-				MB_CASE_TITLE, mb_detect_encoding($value));
-				
-			$value = preg_replace('/ Of /', ' of ', $value);
-			*/
 			$obj->journal->$key_map[$key] = $value;
 			break;
 			
@@ -52,26 +46,6 @@ function process_endnote_key($key, $value, &$obj)
 			$value = str_replace("“", "\"", $value);
 			$value = str_replace("”", "\"", $value);
 			$value = rtrim($value, '.');
-			
-			/*
-			$value = mb_convert_case($value, 
-				MB_CASE_TITLE, mb_detect_encoding($value));
-				
-			// ZooRecord does wierd things to taxon names
-			if (preg_match_all('/(?<genus>[A-Z]\w+)-(?<species>[A-Z]\w+)\b/Uu', $value, $m))
-			{
-				//print_r($m);
-				
-				for($i=0;$i<count($m[0]);$i++)
-				{
-					$value = str_replace($m[0][$i], $m['genus'][$i] . ' ' 
-						. mb_convert_case($m['species'][$i], 
-							MB_CASE_LOWER, mb_detect_encoding($value)),
-						$value);
-				}
-			}
-			*/
-						
 			$obj->$key_map[$key] = $value;
 			break;
 			
@@ -165,14 +139,26 @@ function add_author(&$obj, $authorstring)
 	{
 		$str = $a->firstname;			
 		
-		$len = mb_strlen($str);
-		
-		$parts = array();
-		for($i=0;$i<$len;$i++)
+		if (function_exists('mb_strlen'))
 		{
-			$parts[] = mb_substr($str,$i,1);
+			$len = mb_strlen($str);		
+			$parts = array();
+			for($i=0;$i<$len;$i++)
+			{
+				$parts[] = mb_substr($str,$i,1);
+			}
+			$a->firstname = $parts[0] . '.';
 		}
-		$a->firstname = $parts[0] . '.';
+		else
+		{
+			$len = strlen($str);		
+			$parts = array();
+			for($i=0;$i<$len;$i++)
+			{
+				$parts[] = substr($str,$i,1);
+			}
+			$a->firstname = $parts[0] . '.';		
+		}
 		
 		if ($len > 1)
 		{
@@ -201,50 +187,6 @@ function add_author(&$obj, $authorstring)
 	}
 	*/
 	
-	/*
-	if (!$matched)
-	{
-		if (preg_match('/^(?<lastname>\w+),?\s(?<forename>.*)(\s(?<suffix>Jr))?$/Uu', $authorstring, $m))
-		{
-			$a = new stdClass();
-			$a->firstname = $m['forename'];
-			$a->lastname = $m['lastname'];
-			
-			if ($m['suffix'] != '')
-			{
-				$a->suffix = $m['suffix'];
-			}
-						
-			if (preg_match('/^([A-Z]+)$/Uu', $a->firstname))
-			{
-				$str = $a->firstname;			
-				
-				$len = mb_strlen($str);
-				
-				$parts = array();
-				for($i=0;$i<$len;$i++)
-				{
-					$parts[] = mb_substr($str,$i,1);
-				}
-				$a->firstname = join(" ", $parts);
-			}		
-		}
-		$matched = true;
-	}
-	*/
-	
-	/*
-	if (!$matched)
-	{
-		$author = $authorstring;
-	}
-	
-	$author = mb_convert_case($author, 
-			MB_CASE_TITLE, mb_detect_encoding($author));
-		
-	$author = str_replace(".", " ", $author);
-	$author = preg_replace('/\s\s+/', ' ', $author);
-	*/
 	
 	if ($a)
 	{
